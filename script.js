@@ -16,9 +16,23 @@ for (const square of squares) {
   });
 }
 
+const editPlayerOne = document.querySelector("#edit-player-one");
+editPlayerOne.addEventListener("click", () => {
+  const newName = prompt("Enter a new name for Player 1:");
+  game.playerOne.name = newName;
+  displayController.render(game);
+});
+
+const editPlayerTwo = document.querySelector("#edit-player-two");
+editPlayerTwo.addEventListener("click", () => {
+  const newName = prompt("Enter a new name for Player 2:");
+  game.playerTwo.name = newName;
+  displayController.render(game);
+});
+
 const resetButton = document.querySelector("button");
 resetButton.addEventListener("click", () => {
-  game = createGame();
+  game.reset();
   displayController.clear();
 });
 
@@ -57,11 +71,18 @@ function createGame() {
     }
   }
 
+  function reset() {
+    board.clear();
+    currentPlayer = playerOne;
+    winner = null;
+    over = false;
+  }
+
   function switchPlayer() {
     currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
   }
 
-  return { board, playerOne, playerTwo, takeTurn, isOver, results };
+  return { board, playerOne, playerTwo, takeTurn, isOver, results, reset };
 }
 
 /* Board */
@@ -116,7 +137,13 @@ function createBoard() {
     console.log(board);
   }
 
-  return { squares, placeMark, hasThreeInARow, isFull, print };
+  function clear() {
+    for (let i = 0; i < squares.length; i++) {
+      squares[i] = null;
+    }
+  }
+
+  return { squares, placeMark, hasThreeInARow, isFull, print, clear };
 }
 
 /* Player */
@@ -128,10 +155,10 @@ function createPlayer(name, mark) {
 function createDisplayController() {
   function render(game) {
     const playerOne = document.querySelector("#player-one");
-    playerOne.textContent = `X: ${game.playerOne.name}`;
+    playerOne.textContent = `${game.playerOne.name}`;
 
     const playerTwo = document.querySelector("#player-two");
-    playerTwo.textContent = `O: ${game.playerTwo.name}`;
+    playerTwo.textContent = `${game.playerTwo.name}`;
 
     const squares = document.querySelectorAll(".square");
     for (const square of squares) {

@@ -72,6 +72,11 @@ html {
   font-size: 16px;
 }
 
+body {
+  max-width: 800px;
+  margin: 0px auto;
+}
+
 h1 {
   font-size: 5rem;
   text-align: center;
@@ -89,10 +94,21 @@ h1 {
   }
 }
 
+i {
+  margin-left: 4px;
+  cursor: pointer;
+}
+
 button {
   display: block;
   padding: 4px 24px;
   margin: 32px auto;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 32px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
 }
 
 .message-display {
