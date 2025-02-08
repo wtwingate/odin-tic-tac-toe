@@ -66,3 +66,97 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+html {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+}
+
+h1 {
+  font-size: 5rem;
+  text-align: center;
+  margin: 32px 0px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 32px 0px;
+
+  & p {
+    font-size: 1.5rem;
+  }
+}
+
+button {
+  display: block;
+  padding: 4px 24px;
+  margin: 32px auto;
+}
+
+.message-display {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 32px;
+}
+
+.board {
+  display: grid;
+  grid-template:
+    "0 1 2" 128px
+    "3 4 5" 128px
+    "6 7 8" 128px
+    / 128px 128px 128px;
+  gap: 8px;
+  width: max-content;
+  margin: 0px auto;
+  background-color: black;
+}
+
+.square {
+  width: 128px;
+  height: 128px;
+  background-color: white;
+  font-size: 5rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+[data-index="0"] {
+  grid-area: "0";
+}
+
+[data-index="1"] {
+  grid-area: "1";
+}
+
+[data-index="2"] {
+  grid-area: "2";
+}
+
+[data-index="3"] {
+  grid-area: "3";
+}
+
+[data-index="4"] {
+  grid-area: "4";
+}
+
+[data-index="5"] {
+  grid-area: "5";
+}
+
+[data-index="6"] {
+  grid-area: "6";
+}
+
+[data-index="7"] {
+  grid-area: "7";
+}
+
+[data-index="8"] {
+  grid-area: "8";
+}

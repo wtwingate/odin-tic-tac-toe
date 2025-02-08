@@ -1,10 +1,67 @@
+let game = createGame();
+
+const displayController = createDisplayController();
+displayController.render(game);
+
+const squares = document.querySelectorAll(".square");
+for (const square of squares) {
+  square.addEventListener("click", () => {
+    const index = square.dataset.index;
+    try {
+      game.takeTurn(index);
+    } catch (error) {
+      displayController.showError(error.message);
+    }
+    displayController.render(game);
+  });
+}
+
+const resetButton = document.querySelector("button");
+resetButton.addEventListener("click", () => {
+  game = createGame();
+  displayController.clear();
+});
+
 /* Game */
 function createGame() {
   const board = createBoard();
-  const playerOne = createPlayer("X");
-  const playerTwo = createPlayer("O");
+  const playerOne = createPlayer("Player 1", "X");
+  const playerTwo = createPlayer("Player 2", "O");
+  let currentPlayer = playerOne;
+  let winner = null;
+  let over = false;
 
-  return { board, playerOne, playerTwo };
+  function takeTurn(index) {
+    if (over) return;
+
+    board.placeMark(index, currentPlayer.mark);
+    if (board.hasThreeInARow(currentPlayer.mark)) {
+      winner = currentPlayer;
+      over = true;
+    } else if (board.isFull()) {
+      over = true;
+    } else {
+      switchPlayer();
+    }
+  }
+
+  function isOver() {
+    return over;
+  }
+
+  function results() {
+    if (winner) {
+      return `${winner.name} wins!`;
+    } else {
+      return "That's a tie!";
+    }
+  }
+
+  function switchPlayer() {
+    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+  }
+
+  return { board, playerOne, playerTwo, takeTurn, isOver, results };
 }
 
 /* Board */
@@ -15,7 +72,7 @@ function createBoard() {
     if (!squares[index]) {
       squares[index] = mark;
     } else {
-      throw new Error(`Square ${index} is already marked.`);
+      throw new Error("That square is already marked!");
     }
   }
 
@@ -47,15 +104,70 @@ function createBoard() {
     return !squares.includes(null);
   }
 
-  return { board, placeMark, hasThreeInARow, isFull };
+  function print() {
+    const board = `
+      ${squares[0] || " "} | ${squares[1] || " "} | ${squares[2] || " "}
+      ---------
+      ${squares[3] || " "} | ${squares[4] || " "} | ${squares[5] || " "}
+      ---------
+      ${squares[6] || " "} | ${squares[7] || " "} | ${squares[8] || " "}
+    `;
+
+    console.log(board);
+  }
+
+  return { squares, placeMark, hasThreeInARow, isFull, print };
 }
 
 /* Player */
-function createPlayer(mark) {
-  const mark = mark;
-
-  return { mark };
+function createPlayer(name, mark) {
+  return { name, mark };
 }
 
 /* Display Controller */
-function createDisplayController() {}
+function createDisplayController() {
+  function render(game) {
+    const playerOne = document.querySelector("#player-one");
+    playerOne.textContent = `X: ${game.playerOne.name}`;
+
+    const playerTwo = document.querySelector("#player-two");
+    playerTwo.textContent = `O: ${game.playerTwo.name}`;
+
+    const squares = document.querySelectorAll(".square");
+    for (const square of squares) {
+      const index = square.dataset.index;
+      if (game.board.squares[index]) {
+        square.textContent = game.board.squares[index];
+      } else {
+        square.textContent = "";
+      }
+    }
+
+    if (game.isOver()) {
+      showMessage(game.results());
+    }
+  }
+
+  function clear() {
+    const squares = document.querySelectorAll(".square");
+    for (const square of squares) {
+      square.textContent = "";
+    }
+    showMessage("");
+  }
+
+  function showMessage(message) {
+    const messageDisplay = document.querySelector(".message-display");
+    messageDisplay.textContent = message;
+  }
+
+  function showError(message) {
+    const messageDisplay = document.querySelector(".message-display");
+    messageDisplay.textContent = message;
+    setTimeout(() => {
+      messageDisplay.textContent = "";
+    }, 3000);
+  }
+
+  return { render, clear, showMessage, showError };
+}
