@@ -1,41 +1,3 @@
-let game = createGame();
-
-const displayController = createDisplayController();
-displayController.render(game);
-
-const squares = document.querySelectorAll(".square");
-for (const square of squares) {
-  square.addEventListener("click", () => {
-    const index = square.dataset.index;
-    try {
-      game.takeTurn(index);
-    } catch (error) {
-      displayController.showError(error.message);
-    }
-    displayController.render(game);
-  });
-}
-
-const editPlayerOne = document.querySelector("#edit-player-one");
-editPlayerOne.addEventListener("click", () => {
-  const newName = prompt("Enter a new name for Player 1:");
-  game.playerOne.name = newName;
-  displayController.render(game);
-});
-
-const editPlayerTwo = document.querySelector("#edit-player-two");
-editPlayerTwo.addEventListener("click", () => {
-  const newName = prompt("Enter a new name for Player 2:");
-  game.playerTwo.name = newName;
-  displayController.render(game);
-});
-
-const resetButton = document.querySelector("button");
-resetButton.addEventListener("click", () => {
-  game.reset();
-  displayController.clear();
-});
-
 /* Game */
 function createGame() {
   const board = createBoard();
@@ -127,11 +89,11 @@ function createBoard() {
 
   function print() {
     const board = `
-      ${squares[0] || " "} | ${squares[1] || " "} | ${squares[2] || " "}
-      ---------
-      ${squares[3] || " "} | ${squares[4] || " "} | ${squares[5] || " "}
-      ---------
-      ${squares[6] || " "} | ${squares[7] || " "} | ${squares[8] || " "}
+    ${squares[0] || " "} | ${squares[1] || " "} | ${squares[2] || " "}
+    ---------
+    ${squares[3] || " "} | ${squares[4] || " "} | ${squares[5] || " "}
+    ---------
+    ${squares[6] || " "} | ${squares[7] || " "} | ${squares[8] || " "}
     `;
 
     console.log(board);
@@ -152,7 +114,7 @@ function createPlayer(name, mark) {
 }
 
 /* Display Controller */
-function createDisplayController() {
+const displayController = (function () {
   function render(game) {
     const playerOne = document.querySelector("#player-one");
     playerOne.textContent = `${game.playerOne.name}`;
@@ -197,4 +159,40 @@ function createDisplayController() {
   }
 
   return { render, clear, showMessage, showError };
+})();
+
+const squares = document.querySelectorAll(".square");
+for (const square of squares) {
+  square.addEventListener("click", () => {
+    const index = square.dataset.index;
+    try {
+      game.takeTurn(index);
+    } catch (error) {
+      displayController.showError(error.message);
+    }
+    displayController.render(game);
+  });
 }
+
+const editPlayerOne = document.querySelector("#edit-player-one");
+editPlayerOne.addEventListener("click", () => {
+  const newName = prompt("Enter a new name for Player 1:");
+  game.playerOne.name = newName;
+  displayController.render(game);
+});
+
+const editPlayerTwo = document.querySelector("#edit-player-two");
+editPlayerTwo.addEventListener("click", () => {
+  const newName = prompt("Enter a new name for Player 2:");
+  game.playerTwo.name = newName;
+  displayController.render(game);
+});
+
+const resetButton = document.querySelector("button");
+resetButton.addEventListener("click", () => {
+  game.reset();
+  displayController.clear();
+});
+
+let game = createGame();
+displayController.render(game);
